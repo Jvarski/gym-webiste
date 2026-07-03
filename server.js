@@ -176,6 +176,16 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
+app.get('/api/admin/users', (req, res) => {
+  const { key } = req.query;
+  if (key !== 'gym2026admin') {
+    return res.status(403).json({ error: 'Access denied.' });
+  }
+  const rows = db.prepare('SELECT id, name, email FROM users').all();
+  res.json(rows);
+});
+
+
 app.get('/api/me', (req, res) => {
   if (req.session.userId) {
     res.json({ loggedIn: true, name: req.session.userName });
