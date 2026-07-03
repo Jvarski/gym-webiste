@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PowerFit Gym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="index.html" class="logo-link">PowerFit Gym</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="classes.html">Classes</a>
+    <a href="trainers.html">Trainers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+<a href="dashboard.html">My Bookings</a>
+   <span id="authLinks">
+  <a href="login.html">Login</a>
+  <a href="signup.html">Sign Up</a>
+</span>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Transform Your Body. Transform Your Life.</h1>
+  <p>Join PowerFit Gym today and start your fitness journey with expert trainers and top-tier equipment.</p>
+  <a href="pricing.html" class="btn">Join Now</a>
+</section>
+
+<section class="features">
+  <div class="feature">
+    <h3>Modern Equipment</h3>
+    <p>State-of-the-art machines and free weights for every fitness level.</p>
+  </div>
+  <div class="feature">
+    <h3>Expert Trainers</h3>
+    <p>Certified professionals ready to guide your fitness journey.</p>
+  </div>
+  <div class="feature">
+    <h3>Flexible Classes</h3>
+    <p>From yoga to HIIT, find a class that fits your schedule.</p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 PowerFit Gym. All rights reserved.</p>
+</footer>
+
+<script>
+async function checkAuth() {
+  const res = await fetch('/api/me', { credentials: 'include' });
+  const data = await res.json();
+  const authLinks = document.getElementById('authLinks');
+
+  if (data.loggedIn) {
+    authLinks.innerHTML = `
+      <span class="welcome-text">Welcome, ${data.name}</span>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+  window.location.href = 'index.html';
+}
+
+checkAuth();
+</script>
+
+</body>
+</html>
+

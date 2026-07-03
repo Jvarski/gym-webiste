@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pricing - PowerFit Gym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="index.html" class="logo-link">PowerFit Gym</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="classes.html">Classes</a>
+    <a href="trainers.html">Trainers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+<a href="dashboard.html">My Bookings</a>
+   <span id="authLinks">
+  <a href="login.html">Login</a>
+  <a href="signup.html">Sign Up</a>
+</span>
+  </nav>
+</header>
+
+<section class="page-header">
+  <h1>Membership Plans</h1>
+  <p>Choose the plan that fits your lifestyle.</p>
+</section>
+
+<section class="pricing-grid">
+  <div class="price-card">
+    <h3>Basic</h3>
+    <p class="price">$29<span>/mo</span></p>
+    <ul>
+      <li>Gym floor access</li>
+      <li>Locker room access</li>
+      <li>1 free class per week</li>
+    </ul>
+    <a href="contact.html" class="btn">Choose Plan</a>
+  </div>
+  <div class="price-card featured">
+    <h3>Standard</h3>
+    <p class="price">$49<span>/mo</span></p>
+    <ul>
+      <li>Everything in Basic</li>
+      <li>Unlimited classes</li>
+      <li>1 free trainer session/month</li>
+    </ul>
+    <a href="contact.html" class="btn">Choose Plan</a>
+  </div>
+  <div class="price-card">
+    <h3>Premium</h3>
+    <p class="price">$79<span>/mo</span></p>
+    <ul>
+      <li>Everything in Standard</li>
+      <li>Weekly personal training</li>
+      <li>Nutrition consultation</li>
+    </ul>
+    <a href="contact.html" class="btn">Choose Plan</a>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 PowerFit Gym. All rights reserved.</p>
+</footer>
+
+<script>
+async function checkAuth() {
+  const res = await fetch('/api/me', { credentials: 'include' });
+  const data = await res.json();
+  const authLinks = document.getElementById('authLinks');
+
+  if (data.loggedIn) {
+    authLinks.innerHTML = `
+      <span class="welcome-text">Welcome, ${data.name}</span>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+  window.location.href = 'index.html';
+}
+
+checkAuth();
+</script>
+
+</body>
+</html>

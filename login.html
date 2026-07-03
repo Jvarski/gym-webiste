@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - PowerFit Gym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="index.html" class="logo-link">PowerFit Gym</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="classes.html">Classes</a>
+    <a href="trainers.html">Trainers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+<a href="dashboard.html">My Bookings</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+  </nav>
+</header>
+
+<section class="auth-section">
+  <form class="auth-form" id="loginForm">
+    <h2>Log In</h2>
+    <label>Email</label>
+    <input type="email" id="email" required>
+    <label>Password</label>
+    <input type="password" id="password" required>
+    <p id="errorMsg" class="error-msg"></p>
+    <button type="submit" class="btn">Log In</button>
+    <p class="auth-switch">Don't have an account? <a href="signup.html">Sign up</a></p>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2026 PowerFit Gym. All rights reserved.</p>
+</footer>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    window.location.href = 'index.html';
+  } else {
+    document.getElementById('errorMsg').textContent = data.error;
+  }
+});
+</script>
+
+</body>
+</html>

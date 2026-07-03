@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trainers - PowerFit Gym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="index.html" class="logo-link">PowerFit Gym</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="classes.html">Classes</a>
+    <a href="trainers.html">Trainers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+<a href="dashboard.html">My Bookings</a>
+    <span id="authLinks">
+  <a href="login.html">Login</a>
+  <a href="signup.html">Sign Up</a>
+</span>
+  </nav>
+</header>
+<section class="page-header">
+  <h1>Meet Our Trainers</h1>
+  <p>Certified professionals dedicated to helping you reach your goals.</p>
+</section>
+
+<section class="trainers-grid" id="trainersGrid"></section>
+
+<script>
+async function loadTrainers() {
+  const res = await fetch('/api/trainers');
+  const trainers = await res.json();
+  const grid = document.getElementById('trainersGrid');
+  trainers.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'trainer-card';
+    div.innerHTML = `
+      <div class="trainer-photo"></div>
+      <h3>${t.name}</h3>
+      <p class="role">${t.specialty}</p>
+      <p>${t.bio}</p>
+    `;
+    grid.appendChild(div);
+  });
+}
+loadTrainers();
+</script>
+
+<footer>
+  <p>&copy; 2026 PowerFit Gym. All rights reserved.</p>
+</footer>
+
+<script>
+async function checkAuth() {
+  const res = await fetch('/api/me', { credentials: 'include' });
+  const data = await res.json();
+  const authLinks = document.getElementById('authLinks');
+
+  if (data.loggedIn) {
+    authLinks.innerHTML = `
+      <span class="welcome-text">Welcome, ${data.name}</span>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+  window.location.href = 'index.html';
+}
+
+checkAuth();
+</script>
+
+</body>
+</html>

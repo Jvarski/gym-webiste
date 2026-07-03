@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Dashboard - PowerFit Gym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="index.html" class="logo-link">PowerFit Gym</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="classes.html">Classes</a>
+    <a href="trainers.html">Trainers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+    <a href="dashboard.html">My Bookings</a>
+    <span id="authLinks">
+  <a href="login.html">Login</a>
+  <a href="signup.html">Sign Up</a>
+</span>
+  </nav>
+</header>
+
+<section class="page-header">
+  <h1>My Bookings</h1>
+  <p>Classes you've reserved.</p>
+</section>
+
+<section class="classes-grid" id="bookingsGrid"></section>
+
+<section class="page-header">
+  <h1>Workout Tracker</h1>
+  <p>Log your workouts and track your progress.</p>
+</section>
+
+<section class="workout-section">
+  <form class="workout-form" id="workoutForm">
+    <label>Exercise</label>
+    <input type="text" id="exercise" placeholder="e.g. Bench Press" required>
+
+    <label>Sets</label>
+    <input type="number" id="sets" min="1" required>
+
+    <label>Reps</label>
+    <input type="number" id="reps" min="1" required>
+
+    <label>Weight (kg, optional)</label>
+    <input type="number" id="weight" step="0.5">
+
+    <button type="submit" class="btn">Log Workout</button>
+  </form>
+
+  <div class="workout-history">
+    <h3>Workout History</h3>
+    <table id="workoutTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Exercise</th>
+          <th>Sets</th>
+          <th>Reps</th>
+          <th>Weight</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="workoutBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 PowerFit Gym. All rights reserved.</p>
+</footer>
+
+<script>
+async function loadBookings() {
+  const res = await fetch('/api/bookings', { credentials: 'include' });
+  if (res.status === 401) {
+    alert('Please log in to view your dashboard.');
+    window.location.href = 'login.html';
+    return;
+  }
+  const bookings = await res.json();
+  const grid = document.getElementById('bookingsGrid');
+
+  if (bookings.length === 0) {
+    grid.innerHTML = '<p>You have no bookings yet. Go to the Classes page to book one!</p>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  bookings.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'class-card';
+    div.innerHTML = `<h3>${b.name}</h3><p>${b.schedule}</p><button class="btn book-btn" onclick="cancelBooking(${b.id})">Cancel Booking</button>`;
+    grid.appendChild(div);
+  });
+}
+
+async function cancelBooking(id) {
+  await fetch(`/api/bookings/${id}`, { method: 'DELETE', credentials: 'include' });
+  loadBookings();
+}
+
+async function loadWorkouts() {
+  const res = await fetch('/api/workouts', { credentials: 'include' });
+  const workouts = await res.json();
+  const body = document.getElementById('workoutBody');
+  body.innerHTML = '';
+
+  workouts.forEach(w => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${w.date}</td>
+      <td>${w.exercise}</td>
+      <td>${w.sets}</td>
+      <td>${w.reps}</td>
+      <td>${w.weight ? w.weight + ' kg' : '-'}</td>
+      <td><button class="delete-link" onclick="deleteWorkout(${w.id})">Delete</button></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+document.getElementById('workoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const exercise = document.getElementById('exercise').value;
+  const sets = document.getElementById('sets').value;
+  const reps = document.getElementById('reps').value;
+  const weight = document.getElementById('weight').value || null;
+
+  await fetch('/api/workouts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ exercise, sets, reps, weight })
+  });
+
+  document.getElementById('workoutForm').reset();
+  loadWorkouts();
+});
+
+async function deleteWorkout(id) {
+  await fetch(`/api/workouts/${id}`, { method: 'DELETE', credentials: 'include' });
+  loadWorkouts();
+}
+
+
+async function checkAuth() {
+  const res = await fetch('/api/me', { credentials: 'include' });
+  const data = await res.json();
+  const authLinks = document.getElementById('authLinks');
+
+  if (data.loggedIn) {
+    authLinks.innerHTML = `
+      <span class="welcome-text">Welcome, ${data.name}</span>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+  window.location.href = 'index.html';
+}
+
+
+
+loadBookings();
+loadWorkouts();
+checkAuth();
+</script>
+
+</body>
+</html>
+
+

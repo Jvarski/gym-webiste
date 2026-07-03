@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact - PowerFit Gym</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+ <div class="logo"><a href="index.html" class="logo-link">PowerFit Gym</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="classes.html">Classes</a>
+    <a href="trainers.html">Trainers</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+<a href="dashboard.html">My Bookings</a>
+    <span id="authLinks">
+  <a href="login.html">Login</a>
+  <a href="signup.html">Sign Up</a>
+</span>
+  </nav>
+</header>
+
+<section class="page-header">
+  <h1>Get In Touch</h1>
+  <p>Have questions? We'd love to hear from you.</p>
+</section>
+
+<section class="contact-section">
+  <form class="contact-form">
+    <label>Name</label>
+    <input type="text" placeholder="Your name" required>
+
+    <label>Email</label>
+    <input type="email" placeholder="you@example.com" required>
+
+    <label>Message</label>
+    <textarea rows="5" placeholder="Your message..." required></textarea>
+
+    <button type="submit" class="btn">Send Message</button>
+  </form>
+
+  <div class="contact-info">
+    <h3>Visit Us</h3>
+    <p>123 Fitness St, Tbilisi, Georgia</p>
+    <h3>Call Us</h3>
+    <p>+995 555 123 456</p>
+    <h3>Hours</h3>
+    <p>Mon–Sat: 6:00 AM – 10:00 PM</p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 PowerFit Gym. All rights reserved.</p>
+</footer>
+
+<script>
+async function checkAuth() {
+  const res = await fetch('/api/me', { credentials: 'include' });
+  const data = await res.json();
+  const authLinks = document.getElementById('authLinks');
+
+  if (data.loggedIn) {
+    authLinks.innerHTML = `
+      <span class="welcome-text">Welcome, ${data.name}</span>
+      <a href="#" onclick="logout()">Logout</a>
+    `;
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+  window.location.href = 'index.html';
+}
+
+checkAuth();
+</script>
+
+</body>
+</html>
