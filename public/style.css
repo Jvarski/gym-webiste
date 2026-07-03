@@ -362,16 +362,18 @@ footer {
  nav {
   margin-top: 15px;
   display: flex;
-  flex-direction: column;
+  flex-flow: row wrap;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px 18px;
   width: 100%;
 }
 
 nav a {
+  display: inline-block;
   margin-left: 0;
-  font-size: 16px;
-  padding: 6px 0;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
   .hero h1 {
