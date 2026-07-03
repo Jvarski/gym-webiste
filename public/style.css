@@ -376,6 +376,10 @@ nav a {
   white-space: nowrap;
 }
 
+nav a:nth-child(5) {
+  margin-top: 15px;
+}
+
   .hero h1 {
     font-size: 28px;
   }
